@@ -1,14 +1,18 @@
 import { Router } from 'express';
+import { 
+    cadastrarCategoria, 
+    listarTodasCategorias, 
+    buscarCategoriaUnica, 
+    atualizarCategoria, 
+    excluirCategoria 
+} from '../controllers/CategoriaController.js';
 
-import CategoriaController from  '../controllers/CategoriaController.js';
+const categoriaRouter = Router();
 
-const router = Router();
+categoriaRouter.post('/', cadastrarCategoria);
+categoriaRouter.get('/', listarTodasCategorias);
+categoriaRouter.get('/:id', buscarCategoriaUnica);
+categoriaRouter.put('/:id', atualizarCategoria);
+categoriaRouter.delete('/:id', excluirCategoria);
 
-router.post('/', CategoriaController.create);
-router.get('/', CategoriaController.findAll);
-router.get('/:id', CategoriaController.findById);
-router.put('/:id', CategoriaController.update);
-router.delete('/:id', CategoriaController.delete);
-router.put('/restaure/:id', CategoriaController.restaure);
-
-export default router;
+export default categoriaRouter;
