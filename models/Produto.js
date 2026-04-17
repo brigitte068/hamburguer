@@ -1,31 +1,44 @@
 import { Model, DataTypes } from "sequelize";
-import sequelize from "./Database.js";
+import dbConnection from "./Database.js";
 
-export default class Produto extends Model {
+class Pedido extends Model {
   static associate(models) {
-    Produto.belongsTo(models.Categoria, {
-      foreignKey: 'categoriaId',
-      as: 'categoria'
+    this.hasOne(models.Entrega, { 
+      foreignKey: 'pedido_id', 
+      as: 'entrega' 
+    });
+    this.hasOne(models.Avaliacao, { 
+      foreignKey: 'pedido_id', 
+      as: 'avaliacao' 
     });
   }
 }
-Produto.init({
-  nome: { type: DataTypes.STRING, allowNull: false },
-  descricao: { type: DataTypes.TEXT },
-  preco: {
-    type: DataTypes.DECIMAL(10, 2),
+
+Pedido.init({
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  data: {
+    type: DataTypes.DATE,
     allowNull: false,
-    validate: { min: 0 }
+    defaultValue: DataTypes.NOW
   },
-  disponivel: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: true
+  mesa: {
+    type: DataTypes.INTEGER,
+    allowNull: false
   },
-  categoriaId: { type: DataTypes.INTEGER }
+  nome_cliente: {
+    type: DataTypes.STRING,
+    allowNull: false
+  }
 }, {
-  sequelize,
-  modelName: 'Produto',
-  tableName: 'produtos',
-  paranoid: true,
-  timestamps: true
+  sequelize: dbConnection,
+  tableName: 'pedidos',
+  modelName: 'Pedido',
+  timestamps: true,
+  paranoid: true
 });
+
+export default Pedido;
