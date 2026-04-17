@@ -1,64 +1,60 @@
 import Entrega from '../models/Entrega.js';
 
-class EntregaController {
-    async index(req, res) {
-        try {
-            const entregas = await Entrega.findAll();
-            res.status(200).json(entregas);
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
+export const listarEntregas = async (req, res) => {
+    try {
+        const dadosEntregas = await Entrega.findAll();
+        return res.status(200).json(dadosEntregas);
+    } catch (falha) {
+        return res.status(500).json({ erro: falha.message });
     }
+};
 
-    async show(req, res) {
-        try {
-            const { id } = req.params;
-            const entrega = await Entrega.findByPk(id);
-            if (!entrega) {
-                return res.status(404).json({ error: 'Entrega não encontrada' });
-            }
-            res.status(200).json(entrega);
-        } catch (error) {
-            res.status(500).json({ error: error.message });
+export const buscarEntrega = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const registro = await Entrega.findByPk(id);
+        if (!registro) {
+            return res.status(404).json({ mensagem: 'Entrega não localizada' });
         }
+        return res.status(200).json(registro);
+    } catch (falha) {
+        return res.status(500).json({ erro: falha.message });
     }
+};
 
-    async store(req, res) {
-        try {
-            const entrega = await Entrega.create(req.body);
-            res.status(201).json(entrega);
-        } catch (error) {
-            res.status(400).json({ error: error.message });
+export const salvarEntrega = async (req, res) => {
+    try {
+        const novoItem = await Entrega.create(req.body);
+        return res.status(201).json(novoItem);
+    } catch (falha) {
+        return res.status(400).json({ erro: falha.message });
+    }
+};
+
+export const modificarEntrega = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const entregaAlvo = await Entrega.findByPk(id);
+        if (!entregaAlvo) {
+            return res.status(404).json({ mensagem: 'Registro inexistente para atualização' });
         }
+        await entregaAlvo.update(req.body);
+        return res.status(200).json(entregaAlvo);
+    } catch (falha) {
+        return res.status(400).json({ erro: falha.message });
     }
+};
 
-    async update(req, res) {
-        try {
-            const { id } = req.params;
-            const entrega = await Entrega.findByPk(id);
-            if (!entrega) {
-                return res.status(404).json({ error: 'Entrega não encontrada' });
-            }
-            await entrega.update(req.body);
-            res.status(200).json(entrega);
-        } catch (error) {
-            res.status(400).json({ error: error.message });
+export const removerEntrega = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const itemRemovido = await Entrega.findByPk(id);
+        if (!itemRemovido) {
+            return res.status(404).json({ mensagem: 'Não foi possível encontrar a entrega para exclusão' });
         }
+        await itemRemovido.destroy();
+        return res.status(204).send();
+    } catch (falha) {
+        return res.status(500).json({ erro: falha.message });
     }
-
-    async destroy(req, res) {
-        try {
-            const { id } = req.params;
-            const entrega = await Entrega.findByPk(id);
-            if (!entrega) {
-                return res.status(404).json({ error: 'Entrega não encontrada' });
-            }
-            await entrega.destroy();
-            res.status(204).send();
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
-    }
-}
-
-export default new EntregaController();
+};
