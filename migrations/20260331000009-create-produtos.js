@@ -1,34 +1,55 @@
 'use strict';
 
-/** @type {import('sequelize-cli').Migration} */
-export default{
-  async up (queryInterface, Sequelize) {
-    
-    await queryInterface.createTable('produtos', 
-      { 
-        id:{
-          type : Sequelize.INTEGER,
-          allowNull : false,
-          primaryKey : true
+export default {
+  up: async (interfaceQuery, DataTypes) => {
+    return interfaceQuery.createTable('produtos', {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false
+      },
+      nome: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      descricao: {
+        type: DataTypes.TEXT,
+        allowNull: true
+      },
+      preco: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false
+      },
+      disponivel: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
+      },
+      categoria_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'categorias',
+          key: 'id'
         },
-        nome: { type: Sequelize.STRING, allowNull: false },
-        descricao: { type: Sequelize.TEXT },
-        preco: { type: Sequelize.DECIMAL(10, 2), allowNull: false },
-        disponivel: { type: Sequelize.BOOLEAN, defaultValue: true },
-        categoriaId: {
-          type: Sequelize.INTEGER,
-          references: { model: 'categorias', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'SET NULL'
-        },
-        createdAt: { type: Sequelize.DATE },
-        updatedAt: { type: Sequelize.DATE },
-        deletedAt: { type: Sequelize.DATE } 
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL'
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false
+      },
+      deletedAt: {
+        type: DataTypes.DATE,
+        allowNull: true
+      }
     });
-    
   },
 
-  async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('produtos');
+  down: async (interfaceQuery) => {
+    return interfaceQuery.dropTable('produtos');
   }
 };

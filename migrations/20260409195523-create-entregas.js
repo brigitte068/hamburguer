@@ -1,31 +1,44 @@
 'use strict';
 
-/** @type {import('sequelize-cli').Migration} */
 export default {
-  async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('entregas', {
-      pedido_id :{
-        type : Sequelize.INTEGER,
-        allowNull : false,
-        primaryKey : true,
-        references : { model : 'pedidos', key : 'id', onDelete : 'CASCADE' , onUpdate : 'CASCADE' }
+  up: async (interfaceQuery, Seq) => {
+    await interfaceQuery.createTable('entregas', {
+      pedido_id: {
+        type: Seq.INTEGER,
+        primaryKey: true,
+        allowNull: false,
+        references: {
+          model: 'pedidos',
+          key: 'id'
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
       },
-      codigo_rastreio:{
-        type: Sequelize.STRING,
-        allowNull : false,
-        unique : true
+      codigo_rastreio: {
+        type: Seq.STRING,
+        allowNull: false,
+        unique: true
       },
-      endereco :{
-        type: Sequelize.STRING,
-        allowNull : false
+      endereco: {
+        type: Seq.STRING,
+        allowNull: false
       },
-      createdAt: { type: Sequelize.DATE },
-      updatedAt: { type: Sequelize.DATE },
-      deletedAt: { type: Sequelize.DATE }
-    })
+      createdAt: {
+        type: Seq.DATE,
+        allowNull: false
+      },
+      updatedAt: {
+        type: Seq.DATE,
+        allowNull: false
+      },
+      deletedAt: {
+        type: Seq.DATE,
+        allowNull: true
+      }
+    });
   },
 
-  async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('entregas');
+  down: async (interfaceQuery) => {
+    await interfaceQuery.dropTable('entregas');
   }
 };
