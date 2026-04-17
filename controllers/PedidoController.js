@@ -1,28 +1,51 @@
+import Entrega from "../models/Entrega.js";
 import Pedido from "../models/Pedido.js";
+import Avaliacao from "../models/Avaliacao.js";
 
-const PedidoController = {
-    create : async (req, res) =>{
-        try{
-            const pedido = await Pedido.create(req.body);
-            res.status(201).json(pedido);
-        }catch(error){
-            res.status(500).json({ error: error.message });
-        }
-    },
-
-    findAll : async (req,res) =>{
-        try{
-            const pedidos = await Pedido.findAll();
-            if (pedidos.length === 0){
-                throw new Error("Não há pedidos");
-            }
-            res.status(200).json(pedidos);  
-        }
-        catch(error){
-            res.status(500).json({ error: error.message });
-        }
-    }
-
+export const realizarPedido = async (req, res) => {
+  try {
+    const novoRegistro = await Pedido.create(req.body);
+    return res.status(201).json(novoRegistro);
+  } catch (err) {
+    return res.status(500).json({ falha: err.message });
+  }
 };
 
-export default PedidoController;
+export const obterTodosPedidos = async (req, res) => {
+  try {
+    const listagem = await Pedido.findAll({
+      include: [
+        { model: Entrega, as: 'entrega' },
+        { model: Avaliacao, as: 'avaliacao' }
+      ]
+    });
+
+    if (!listagem || listagem.length === 0) {
+      return res.status(404).json({ informacao: "A base de dados está vazia" });
+    }
+
+    return res.status(200).json(listagem);
+  } catch (err) {
+    return res.status(500).json({ falha: err.message });
+  }
+};
+
+export const buscarPedidoUnico = async (req, res) => {
+  try {
+    const { id: codigoPedido } = req.params;
+    const item = await Pedido.findByPk(codigoPedido, {
+      include: [
+        { model: Entrega, as: 'entrega' },
+        { model: Avaliacao, as: 'avaliacao' }
+      ]
+    });
+
+    if (!item) {
+      return res.status(404).json({ mensagem: "Não existe pedido com o ID informado" });
+    }
+
+    return res.status(200).json(item);
+  } catch (err) {
+    return res.status(500).json({ falha: err.message });
+  }
+};
