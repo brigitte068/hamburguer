@@ -1,17 +1,26 @@
 import express from 'express';
+import './models/index.js';
 import categoriaRoutes from './routes/categoriaRoutes.js';
-const app = express();
+import pedidoRoutes from './routes/pedidoRoutes.js';
+import produtoRoutes from './routes/produtosRoutes.js';
+import avaliacaoRoutes from './routes/avaliacaoRoutes.js';
+import entregaRoutes from './routes/entregaRoutes.js';
 
-const port = 3000;
+const api = express();
+const PORTA = 3000;
 
-app.use(express.json());
+api.use(express.json());
 
-app.get('/', (req, res) => {
-    res.send('Hello World!');
+api.get('/', (req, res) => {
+    return res.status(200).json({ status: 'Sistema Operacional' });
 });
 
-app.use('/categoria',categoriaRoutes);
+api.use('/categoria', categoriaRoutes);
+api.use('/pedido', pedidoRoutes);
+api.use('/entrega', entregaRoutes);
+api.use('/produto', produtoRoutes);
+api.use('/avaliacoes', avaliacaoRoutes);
 
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
+api.listen(PORTA, () => {
+    console.log(`Servidor ativo em: http://localhost:${PORTA}`);
 });
